@@ -4,7 +4,7 @@ import shutil
 from time import sleep
 class EdgeController():
     
-    def __init__(self):
+    def __init__(self, ingress_mode):
         self.processed_files = []
         self.isStarted = False
         self.input_dir = ""
