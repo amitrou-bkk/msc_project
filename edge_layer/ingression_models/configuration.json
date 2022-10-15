@@ -1,0 +1,7 @@
+{
+    "mode" : "FileSystem",
+    "parameters":{
+        "input_dir":"",
+        "process_dir":""
+    }
+}
