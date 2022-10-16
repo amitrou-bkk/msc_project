@@ -1,12 +1,17 @@
 
 import os
 import shutil
+import src.edge_layer.ingression_mode as IngressMode
+from src.edge_layer.ingression_models.ingress_factory import IngressFactory
 from time import sleep
+
 class EdgeController():
     
-    def __init__(self, ingress_mode):
+    def __init__(self, ingress_mode: IngressMode):
+
         self.processed_files = []
         self.isStarted = False
+        self.ingressProvider = IngressFactory().create(ingress_mode)
         self.input_dir = ""
         self.process_dir = ""
 
@@ -25,7 +30,11 @@ class EdgeController():
         self.isStarted = True
         print("Edge Controller Started.")
         while self.isStarted:
-            print("iteration passed")
+            print("Start Reading Data from Source")
+            self.ingressProvider.read()
+            while image := self.ingressProvider.getNextData():
+                print(image)
+            print("Finished Reading Data.")
             sleep(1)
 
     def stopListening(self):

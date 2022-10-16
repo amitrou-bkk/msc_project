@@ -4,7 +4,7 @@
         {
             "mode" : "FileSystem",
             "active": true,
-            "parameters": { "input_dir":"/home/amitrou/msc_project/data","process_dir":"/home/amitrou/msc_project/data"}
+            "parameters": { "input_dir":"","process_dir":""}
         }
     ]
 }

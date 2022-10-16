@@ -6,3 +6,8 @@ class DataIngressionConfiguration(ABC):
     @abstractmethod
     def read(self):
         pass
+
+    @abstractmethod
+    def getNextData(self):
+        pass
+    
