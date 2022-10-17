@@ -1,4 +1,9 @@
 import json
+import os
+
+def get_filename_and_extension(filename):
+        file_name, file_extension = os.path.splitext(filename)
+        return file_name, file_extension
 
 def read_json(file_path):
     with open(file_path, 'r') as f:

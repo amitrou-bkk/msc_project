@@ -3,6 +3,7 @@ import os
 import shutil
 import src.edge_layer.ingression_mode as IngressMode
 from src.edge_layer.ingression_models.ingress_factory import IngressFactory
+import src.utilities.file as fileUtils
 from time import sleep
 
 class EdgeController():
@@ -12,19 +13,22 @@ class EdgeController():
         self.processed_files = []
         self.isStarted = False
         self.ingressProvider = IngressFactory().create(ingress_mode)
-        self.input_dir = ""
-        self.process_dir = ""
+        self.process_dir = "process_data"
+        self.allowedExtensions = [".jpg",".tiff", ".jpeg", ".img"]
 
-    def getFileWithoutExtension(self, filename):
-        os.path.splitext(filename)[0]
+    def stage_file_for_process(self, img):
 
-    def process_files(self):
-       arr = os.listdir()
-       for file in arr:
-            if file not in self.process_files:
-                staged_file = os.path.join(self.process_dir, self.getFileWithoutExtension(file), ".img")
-                shutil.move(file,  staged_file)
-                self.processed_files.append(file)
+       if (not os.path.exists(self.process_dir)):
+            os.mkdir(self.process_dir)
+
+       file_name, file_extension = fileUtils.get_filename_and_extension(img)
+
+       if (file_extension not in self.allowedExtensions):
+            return
+       
+       staged_file = os.path.join(self.process_dir, os.path.basename(file_name) + file_extension)
+       shutil.move(img, staged_file)
+
 
     def startListening(self):
         self.isStarted = True
@@ -33,7 +37,8 @@ class EdgeController():
             print("Start Reading Data from Source")
             self.ingressProvider.read()
             while image := self.ingressProvider.getNextData():
-                print(image)
+                image_path = os.path.join(self.ingressProvider.input_dir, image)
+                self.stage_file_for_process(image_path)
             print("Finished Reading Data.")
             sleep(1)
 
