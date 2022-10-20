@@ -4,6 +4,8 @@ import numpy as np
 import time
 import os
 import imageio.v3 as iio
+from datetime import datetime
+
 
 
 class CameraCapture:
@@ -21,14 +23,18 @@ class CameraCapture:
         frame_count = delayInSeconds
         self.IsCapturing = True
         while (self.IsCapturing):
+            current_date = datetime.now()
+            current_date.strftime('%Y%m%d%H%M%S')
+           
             _, frame = cap.read()
             cv2.imshow("Frame", frame)
-            iio.imwrite(f"frame_{frame_count}.jpg", frame)
+            iio.imwrite(f"{current_date}.jpg", frame)
+           
             frame_count = frame_count + 1
 
             if cv2.waitKey(1) == ord('q'):
                 break
-            time.sleep(1)
+            time.sleep(delayInSeconds)
 
         cap.release()
         cv2.destroyAllWindows()
