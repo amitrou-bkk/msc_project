@@ -2,7 +2,7 @@ import unittest
 import os
 from src.edge_layer.ingression_models.IngressionFileSystem import FileSystem
 
-class FileSystemConfiguratuion_ShouldRead_JsonConfig_Test(unittest.TestCase):
+class FileSystemConfiguratio_Test(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
