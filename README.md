@@ -7,7 +7,7 @@ Run the following commands
 In project directory run
 
 ### Feature Extractor
-docker build -t extractor -f ./docker/feature-extraction.dockerfile .<br
-docker run extractor<br
+docker build -t extractor -f ./docker/feature-extraction.dockerfile .<br>
+docker run extractor<br>
 
 
