@@ -4,7 +4,7 @@ class SIFT:
     def __init__(self):
         pass
 
-    def GenerateKeyPointsAndDescriptors(self, image, save_file = None):
+    def GenerateKeyPointsAndDescriptors(self, image):
        sourceImage = cv2.imread(image)
 
        grayscale = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY) 
@@ -12,10 +12,7 @@ class SIFT:
        siftObject = cv2.xfeatures2d.SIFT_create()
        keypoints, descriptors = siftObject.detectAndCompute(grayscale, None)  
 
-       if save_file is not None:
-            np.save(save_file)
-            
-       return keypoints, keypoints
+       return keypoints, descriptors
 
     def MatchImages(self, query_image, train_image, num_neighbours = 2):
         _ , query_descriptors = self.GenerateKeyPointsAndDescriptors(query_image)
