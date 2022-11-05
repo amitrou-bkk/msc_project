@@ -1,4 +1,5 @@
 from src.image_processing.SIFT import SIFT
+from src.db.mongoDbClient import MongoDbClient
 import os
 class FeatureExtractor:
     def __init__(self, train_files="andreas"):
