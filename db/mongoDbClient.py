@@ -9,11 +9,16 @@ class MongoDbClient(DbClient):
         self.client = MongoClient(f'mongodb://{self.username}:{self.password}@{self.host}:{self.port}/')
     
     def connect(self):
-        print(self.client.server_info())
-    
+        try:
+            print(self.client.server_info())
+            return True
+        except Exception as exception:
+            print(exception)
+            return False
+
     def createDb(self, name):
         dblist = self.client.list_database_names()
-        
+
         if name in dblist:
             print(f"{name} database exists.")
             return
