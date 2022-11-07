@@ -1,0 +1,6 @@
+version: '3.1'
+services:
+  edge-feature-extraction-app:
+    build: 
+      context: ..
+      dockerfile: ./docker/edge-feature-extraction.dockerfile

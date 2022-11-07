@@ -22,7 +22,7 @@ services:
   feature-extraction-app:
     build: 
       context: ..
-      dockerfile: ./docker/feature-extraction.dockerfile
+      dockerfile: ./docker/cloud-feature-extraction.dockerfile
     depends_on:
       - mongo
     links:
