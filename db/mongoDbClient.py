@@ -27,4 +27,11 @@ class MongoDbClient(DbClient):
         self.collection = self.db["defaultCollection"]
         dummy_doc = self.collection.insert_one({})
         return dummy_doc.inserted_id
+
+    def add_document(self, data):
+        if type(data) is dict:
+            self.collection.insert_one(data)
+        else:
+            raise Exception("Data were not in dictionary format")
+
         

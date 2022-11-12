@@ -1,10 +1,10 @@
 FROM python:3.8.10
 WORKDIR /app
-COPY requirements.txt requirements.txt
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6 git  -y
-RUN pip install -r requirements.txt
-COPY ./ ./src
+RUN mkdir src
+RUN git clone https://github.com/amitrou-bkk/msc_project.git src
+RUN pip install -r ./src/requirements.txt
 ENV PYTHONPATH="/app"
 ENV DB_HOST="mongo"
 ENV DB_PORT="27017"
