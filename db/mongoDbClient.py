@@ -7,7 +7,8 @@ class MongoDbClient(DbClient):
     def __init__(self, host, db_name, port, username, password):
         super().__init__(host, db_name, port, username, password)
         self.client = MongoClient(f'mongodb://{self.username}:{self.password}@{self.host}:{self.port}/')
-    
+        self.db_name = db_name
+        
     def connect(self):
         try:
             print(self.client.server_info())
@@ -18,6 +19,7 @@ class MongoDbClient(DbClient):
 
     def createDb(self, name):
         dblist = self.client.list_database_names()
+        self.db_name = name
 
         if name in dblist:
             print(f"{name} database exists.")
@@ -30,6 +32,8 @@ class MongoDbClient(DbClient):
 
     def add_document(self, data):
         if type(data) is dict:
+            self.db = self.client[self.db_name]
+            self.collection = self.db["defaultCollection"]
             self.collection.insert_one(data)
         else:
             raise Exception("Data were not in dictionary format")

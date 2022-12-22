@@ -1,6 +1,8 @@
 from edge_layer.edge_controller import EdgeController, IngressMode
 from device_layer.CameraCapture import CameraCapture
 from image_processing.feature_extraction import FeatureExtractor
+from storage.FileStorage import FileStorage
+from storage.AzureBlobStorage import AzureBlobSorage
 import threading
 import os
 import sys
@@ -19,7 +21,14 @@ if __name__ == '__main__':
                  edgeControllerThread = threading.Thread(target = edgeController.startListening)
                  edgeControllerThread.start()
             elif component == "feature_extractor":
-                feature_extractor = FeatureExtractor("test")
+                if os.environ["STORAGE_PROVIDER"] == "fs":
+                    provider = FileStorage()
+                elif os.environ["STORAGE_PROVIDER"] == "azure":
+                    provider = AzureBlobSorage(os.environ["AZURE_STORAGE_ACCOUNT"], os.environ["AZURE_STORAGE_SAS_TOKEN"])
+                else:
+                  print("provider was not found")
+                  exit()
+                feature_extractor = FeatureExtractor(os.environ["INPUT_DATA"], provider)
                 feature_extractor.ExtractFeatures()
             else:
                 print("No module found!")

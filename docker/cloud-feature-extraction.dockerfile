@@ -10,5 +10,6 @@ ENV DB_HOST="mongo"
 ENV DB_PORT="27017"
 ENV DB_USER="root"
 ENV DB_PASSWORD="example"
-ENV FILE_DIR="local:"
+ENV STORAGE_PROVIDER="fs"
+ENV INPUT_DATA="/home/data_input"
 CMD ["python3", "./src/app.py", "feature_extractor"]
