@@ -5,7 +5,7 @@ import time
 import os
 import imageio.v3 as iio
 from datetime import datetime
-
+from PIL import Image
 
 
 class CameraCapture:
@@ -22,13 +22,18 @@ class CameraCapture:
         cap = cv2.VideoCapture(self.url)
         frame_count = delayInSeconds
         self.IsCapturing = True
+        
+        if not os.path.exists(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"])):
+            os.makedirs(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"]))
+
         while (self.IsCapturing):
             current_date = datetime.now()
-            current_date.strftime('%Y%m%d%H%M%S')
+            dateStr =  current_date.strftime('%Y%m%d%H%M%S')
            
             _, frame = cap.read()
             cv2.imshow("Frame", frame)
-            iio.imwrite(f"{current_date}.jpg", frame)
+            frame_img_name = os.path.join("/app/edge_shared_files/", os.environ["CAMERA_ID"] + "/",  dateStr + ".jpg")
+            iio.imwrite(frame_img_name, frame)
            
             frame_count = frame_count + 1
 
@@ -41,3 +46,30 @@ class CameraCapture:
 
     def Stop(self):
         self.IsCapturing = False
+
+    def StartSimulation(self, delayInSeconds=5):
+       
+        frame_count = 0
+        self.IsCapturing = True
+        
+        if not os.path.exists(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"])):
+            os.makedirs(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"]))
+
+        while (self.IsCapturing):
+            current_date = datetime.now()
+            dateStr = current_date.strftime('%Y%m%d%H%M%S')
+           
+            image = Image.new("RGB", (300, 300))
+            image_created = os.path.join("/app/edge_shared_files/", os.environ["CAMERA_ID"] + "/",  dateStr + ".jpg")
+            image.save(image_created, 'JPEG')
+            print(f"Dummy image {image_created} saved.")
+            frame_count += 1
+
+            if frame_count >= 5:
+                self.IsCapturing = False
+
+            time.sleep(delayInSeconds)
+
+    def RandomImage(a):
+        image = Image.new("RGB", (300, 300))
+        image.save("blank.jpg") 

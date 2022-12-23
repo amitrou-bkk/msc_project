@@ -21,6 +21,7 @@ class FileSystem(DataIngressionConfiguration):
                 self.staging_dir = cfg["parameters"]["process_dir"]
                 break
         self.files = os.listdir(self.input_dir)
+        print(self.files)
 
     def getNextData(self):
         if len(self.files) == 0:

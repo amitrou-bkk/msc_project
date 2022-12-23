@@ -13,9 +13,12 @@ if __name__ == '__main__':
         if arguments is not None and len(arguments) > 0:
             component = arguments[1]
             if component == "camera_controller":
-                capture = CameraCapture(os.environ["CAMERA_IP"], os.environ["CAMERA_PORT"], False, os.environ["user"], os.environ["password"])
-                image_capture_thread = threading.Thread(target = capture.Start)
-                image_capture_thread.start()
+                capture = CameraCapture(os.environ["CAMERA_IP"], os.environ["CAMERA_PORT"], False, os.environ["CAMERA_USERNAME"], os.environ["CAMERA_PASSWORD"])
+                if str(os.environ["ENABLE_CAMERA_STREAM_SIMULATION"]).lower() == "true":
+                    captureThread = threading.Thread(target =  capture.StartSimulation)
+                else:
+                    captureThread = threading.Thread(target =  capture.Start)
+                captureThread.start()
             elif component == "edge":
                  edgeController = EdgeController(IngressMode.EdgeDataIngressMode.FileSystem)
                  edgeControllerThread = threading.Thread(target = edgeController.startListening)
@@ -26,12 +29,16 @@ if __name__ == '__main__':
                 elif os.environ["STORAGE_PROVIDER"] == "azure":
                     provider = AzureBlobSorage(os.environ["AZURE_STORAGE_ACCOUNT"], os.environ["AZURE_STORAGE_SAS_TOKEN"])
                 else:
-                  print("provider was not found")
+                  print("Storage Provider was not found")
                   exit()
+                
                 feature_extractor = FeatureExtractor(os.environ["INPUT_DATA"], provider)
-                feature_extractor.ExtractFeatures()
+                if os.environ["RUN_MODE"] == None or os.environ["RUN_MODE"] == ""  or os.environ["RUN_MODE"].lower() == "continuous":
+                    extractorThread = threading.Thread(target = feature_extractor.ExtractFeatures, args = [True])
+                elif os.environ["RUN_MODE"].lower() ==  "on_demand":
+                    feature_extractor.ExtractFeatures()
             else:
                 print("No module found!")
     except KeyboardInterrupt:
-        image_capture_thread.join()
+        captureThread.join()
         edgeControllerThread.join()

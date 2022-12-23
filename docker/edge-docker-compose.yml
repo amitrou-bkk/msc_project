@@ -1,6 +1,29 @@
 version: '3.1'
 services:
-  edge-feature-extraction-app:
+  edge-camera-controller-app-01:
     build: 
-      context: ..
-      dockerfile: ./docker/edge-feature-extraction.dockerfile
+       context: ..
+       dockerfile: ./docker/edge-camera-controller-phone-cam-01.dockerfile
+    volumes:
+        - shared-data:/app/edge_shared_files
+     
+  edge-ingress-controller-app:
+    build: 
+        context: ..
+        dockerfile: ./docker/edge-ingress-controller.dockerfile
+    depends_on:
+      - "edge-camera-controller-app-01"
+    volumes:
+        - shared-data:/app/edge_shared_files
+  
+  edge-extractor-app:
+    build: 
+       context: ..
+       dockerfile: ./docker/edge-feature-extraction.dockerfile
+    depends_on:
+      - "edge-ingress-controller-app"
+    volumes:
+        - shared-data:/app/edge_shared_files
+
+volumes:
+  shared-data:

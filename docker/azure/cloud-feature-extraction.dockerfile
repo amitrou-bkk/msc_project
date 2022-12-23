@@ -10,5 +10,12 @@ ENV DB_HOST="mongo"
 ENV DB_PORT="27017"
 ENV DB_USER="root"
 ENV DB_PASSWORD="example"
-ENV FILE_DIR="local:"
+# ------Environment variables for file system provider
+ENV STORAGE_PROVIDER="fs"
+ENV INPUT_DATA="/home/data_input" 
+# ------Environment variables for Azure BlobStorage provider
+# ENV STORAGE_PROVIDER="azure"
+# ENV AZURE_STORAGE_ACCOUNT="https://<storage_account_name>.blob.core.windows.net"
+# ENV AZURE_STORAGE_SAS_TOKEN="<SAS_TOKEN>"
+# ENV INPUT_DATA="<container_name>"
 CMD ["python3", "./src/app.py", "feature_extractor"]
