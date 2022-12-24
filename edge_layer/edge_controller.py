@@ -41,7 +41,7 @@ class EdgeController():
                 image_path = os.path.join(self.ingressProvider.input_dir, image)
                 self.stage_file_for_process(image_path)
             print("Finished Reading Data.")
-            sleep(10)
+            sleep(2)
 
     def stopListening(self):
          print("Edge Controller Ending silently.")

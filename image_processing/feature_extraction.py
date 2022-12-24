@@ -4,6 +4,7 @@ from src.db.mongoDbClient import MongoDbClient
 import uuid
 import os
 import bson
+import time
 
 class FeatureExtractor:
     def __init__(self, train_files, storage_provider):
@@ -21,18 +22,19 @@ class FeatureExtractor:
             return self.client.connect()
 
     def ExtractFeatures(self, isContinuousLoop = False):
+        print(isContinuousLoop)
         if(self.__ShouldUseDb() and self.__CanConnectToDb()):
             self.PrepareFeatureDb("features_db")
-
-        if not self.storage_provider.path_exists(self.training_data):
-            print(f"Dir {self.training_data} was not found")
-            return
             
-        print("Started Extracting Features")
-
         processor = SIFT()
 
         while True: 
+            if not self.storage_provider.path_exists(self.training_data):
+                #print(f"Dir {self.training_data} was not found")
+                continue
+            
+            print("Started Extracting Features")
+
             files =  self.storage_provider.read_directory(self.training_data)
             for file in files:
                 print(f"SHIFT processing for file {file}")
@@ -50,7 +52,9 @@ class FeatureExtractor:
                     }
 
                     self.client.add_document(document)
-                    
+           
+            time.sleep(10)
+
             if not isContinuousLoop:
                 break
 

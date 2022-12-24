@@ -7,5 +7,5 @@ RUN pip install -r requirements.txt
 COPY ./ ./src
 ENV PYTHONPATH="/app"
 ENV STORAGE_PROVIDER="fs"
-ENV INPUT_DATA="/app/edge_shared_files/process_data"
+ENV INPUT_DATA="/app/edge_shared_files/PHONE_CAM_01"
 CMD ["python3", "./src/app.py", "edge"]

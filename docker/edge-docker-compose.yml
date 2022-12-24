@@ -5,7 +5,7 @@ services:
        context: ..
        dockerfile: ./docker/edge-camera-controller-phone-cam-01.dockerfile
     volumes:
-        - shared-data:/app/edge_shared_files
+        - /home/amitrou/e_results:/app/edge_shared_files
      
   edge-ingress-controller-app:
     build: 
@@ -14,7 +14,7 @@ services:
     depends_on:
       - "edge-camera-controller-app-01"
     volumes:
-        - shared-data:/app/edge_shared_files
+        - /home/amitrou/e_results:/app/edge_shared_files
   
   edge-extractor-app:
     build: 
@@ -23,7 +23,7 @@ services:
     depends_on:
       - "edge-ingress-controller-app"
     volumes:
-        - shared-data:/app/edge_shared_files
+        - /home/amitrou/e_results:/app/edge_shared_files
 
-volumes:
-  shared-data:
+# volumes:
+#   shared-data:

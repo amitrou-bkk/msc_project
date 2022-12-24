@@ -14,10 +14,12 @@ if __name__ == '__main__':
             component = arguments[1]
             if component == "camera_controller":
                 capture = CameraCapture(os.environ["CAMERA_IP"], os.environ["CAMERA_PORT"], False, os.environ["CAMERA_USERNAME"], os.environ["CAMERA_PASSWORD"])
-                if str(os.environ["ENABLE_CAMERA_STREAM_SIMULATION"]).lower() == "true":
-                    captureThread = threading.Thread(target =  capture.StartSimulation)
+                if os.environ["ENABLE_CAMERA_STREAM_SIMULATION"].lower() == "true":
+                    print("Camera Simulation Started")
+                    captureThread = threading.Thread(target = capture.StartSimulation)
                 else:
-                    captureThread = threading.Thread(target =  capture.Start)
+                    print("Real Camera Feed Started")
+                    captureThread = threading.Thread(target = capture.Start)
                 captureThread.start()
             elif component == "edge":
                  edgeController = EdgeController(IngressMode.EdgeDataIngressMode.FileSystem)
@@ -33,8 +35,9 @@ if __name__ == '__main__':
                   exit()
                 
                 feature_extractor = FeatureExtractor(os.environ["INPUT_DATA"], provider)
-                if os.environ["RUN_MODE"] == None or os.environ["RUN_MODE"] == ""  or os.environ["RUN_MODE"].lower() == "continuous":
+                if os.environ["RUN_MODE"] == None or os.environ["RUN_MODE"] == ""  or os.environ["RUN_MODE"] == "CONTINUOUS":
                     extractorThread = threading.Thread(target = feature_extractor.ExtractFeatures, args = [True])
+                    extractorThread.start()
                 elif os.environ["RUN_MODE"].lower() ==  "on_demand":
                     feature_extractor.ExtractFeatures()
             else:

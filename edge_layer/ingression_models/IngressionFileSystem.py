@@ -13,6 +13,7 @@ class FileSystem(DataIngressionConfiguration):
         self.files = []
 
     def read(self):
+        print("Reading")
         data = fileUtils.read_json(self.path)
         available_cfgs = data["ingress_configurations"]
         for cfg in available_cfgs:
@@ -24,6 +25,7 @@ class FileSystem(DataIngressionConfiguration):
         print(self.files)
 
     def getNextData(self):
+        print("getNExtData")
         if len(self.files) == 0:
              return None
         if self.current_index >= len(self.files):
