@@ -17,7 +17,7 @@ class FileStorage(BaseStorage):
             f.write(path)
 
     def path_exists(self, path):
-        os.path.exists(path)
+        return os.path.exists(path)
 
     def read_file(self, file):
         return file

@@ -5,11 +5,13 @@ import uuid
 import os
 import bson
 import time
+import src.utilities.file as fileUtils
 
 class FeatureExtractor:
     def __init__(self, train_files, storage_provider):
         self.training_data = train_files
         self.storage_provider = storage_provider
+        self.loggerFilePath =  os.path.join(self.training_data, "feature_extractor.log")
 
     def PrepareFeatureDb(self, dbName):
         self.client.createDb(dbName)
@@ -22,27 +24,30 @@ class FeatureExtractor:
             return self.client.connect()
 
     def ExtractFeatures(self, isContinuousLoop = False):
-        print(isContinuousLoop)
+       
         if(self.__ShouldUseDb() and self.__CanConnectToDb()):
             self.PrepareFeatureDb("features_db")
             
         processor = SIFT()
-
+        print(f"Is Continuius:{isContinuousLoop}-{self.training_data}-{self.loggerFilePath}")
         while True: 
             if not self.storage_provider.path_exists(self.training_data):
-                #print(f"Dir {self.training_data} was not found")
+                fileUtils.write_text_to_file(f"{self.training_data} doesnot exist",self.loggerFilePath)
                 continue
             
             print("Started Extracting Features")
+            fileUtils.write_text_to_file( "Started Extracting Features", self.loggerFilePath)
 
             files =  self.storage_provider.read_directory(self.training_data)
             for file in files:
                 print(f"SHIFT processing for file {file}")
-                _, descriptors = processor.GenerateKeyPointsAndDescriptors(self.storage_provider.read_file(file))
+                fileUtils.write_text_to_file( f"SHIFT processing for file {file}",self.loggerFilePath)
+                _, descriptors = processor.GenerateKeyPointsAndDescriptors(self.storage_provider.read_file(os.path.join(self.training_data,file)))
                 print(f"""Descriptors Calculated: 
                             File: {file}
                             Descriptors: {descriptors}""")
-                
+
+                # TO DO Save to file
                 if self.__ShouldUseDb():
                     print("Saving to db")                
                     document = {
@@ -52,6 +57,10 @@ class FeatureExtractor:
                     }
 
                     self.client.add_document(document)
+                else:
+                    filename , _ = fileUtils.get_filename_and_extension(file)
+                    fileUtils.write_text_to_file( f"Saving descriptor in os.path.join(self.training_data, {filename}.descriptor", self.loggerFilePath)
+                    fileUtils.save_array_to_file(descriptors, os.path.join(self.training_data, f"{filename}"))
            
             time.sleep(10)
 

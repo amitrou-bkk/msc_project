@@ -16,3 +16,7 @@ def save_array_to_file(arr, filename):
 
 def load_file_to_array(filename):
     return np.load(filename)
+
+def write_text_to_file(text, filename):
+    with open(filename, "a") as f:
+        f.write(text)
