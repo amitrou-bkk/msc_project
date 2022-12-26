@@ -10,7 +10,7 @@ class FileStorage(BaseStorage):
             print(f"Error {str(ex)}")
 
     def read_directory(self, path):
-        return os.listdir(path)
+        return [os.path.join(path, file) for file in os.listdir(path)]
     
     def write_file(self, path):
         with open(path, "w") as f:
