@@ -10,7 +10,7 @@ import sys
 if __name__ == '__main__':
     try:
         arguments = sys.argv
-        if arguments is not None and len(arguments) > 0:
+        if arguments is not None and len(arguments) > 1:
             component = arguments[1]
             if component == "camera_controller":
                 capture = CameraCapture(os.environ["CAMERA_IP"], os.environ["CAMERA_PORT"], False, os.environ["CAMERA_USERNAME"], os.environ["CAMERA_PASSWORD"])

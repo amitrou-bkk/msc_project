@@ -73,7 +73,7 @@ class FeatureExtractor:
                         fileUtils.write_text_to_file( f"Saving descriptor in os.path.join(self.training_data, {shiftFilename}.descriptor", self.loggerFilePath)
                         fileUtils.save_array_to_file(descriptors, os.path.join(self.training_data, f"{shiftFilename}"))
                 except Exception as ex:
-                    pass
+                   print(ex)
            
             time.sleep(10)
 

@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import src.image_processing.utils as img_processing_utils
 
-class SIFT:
+class SURF:
 
     LOWE_DESCRIPTOR_MATCH_RATIO = 0.75
 
@@ -14,8 +14,8 @@ class SIFT:
 
        grayscale = cv2.cvtColor(sourceImage, cv2.COLOR_BGR2GRAY) 
 
-       siftObject = cv2.xfeatures2d.SIFT_create()
-       keypoints, descriptors = siftObject.detectAndCompute(grayscale, None)  
+       surfObject = cv2.xfeatures2d.SURF_create()
+       keypoints, descriptors = surfObject.detectAndCompute(grayscale, None)  
 
        return keypoints, descriptors
 
@@ -25,10 +25,9 @@ class SIFT:
         bf = cv2.BFMatcher()
         matches = bf.knnMatch(query_descriptors, train_descriptors, num_neighbours)
 
-        # Lowe's test ratio matching.
-        good_matches = img_processing_utils.LowesRatioTest(matches, SIFT.LOWE_DESCRIPTOR_MATCH_RATIO)
-
-        percent=(len(good_matches)/len(train_descriptors)) * 100
+        good_matches = img_processing_utils.LowesRatioTest(matches, SURF.LOWE_DESCRIPTOR_MATCH_RATIO)
+                       
+        percent= ((len(good_matches))/len(train_descriptors)) * 100
         if percent >= 75.00:
             return True
         if percent < 75.00:
@@ -38,11 +37,12 @@ class SIFT:
         bf = cv2.BFMatcher()
         matches = bf.knnMatch(query_descriptors, train_descriptors, num_neighbours)
 
-        # Lowe's test ratio matching.
-        good_matches = good_matches = img_processing_utils.LowesRatioTest(matches, SIFT.LOWE_DESCRIPTOR_MATCH_RATIO)
+        good_matches = self.__LowesRatioTest(matches)
 
-        percent = (len(good_matches)/len(train_descriptors)) * 100
+        percent= ((len(good_matches))/len(train_descriptors)) * 100
         if percent >= 75.00:
             return True
         if percent < 75.00:
-            return False 
+            return False
+
+    

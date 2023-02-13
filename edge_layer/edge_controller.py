@@ -36,10 +36,12 @@ class EdgeController():
         while self.isStarted:
             print("Start Reading Data from Source")
             self.ingressProvider.read()
-            while image := self.ingressProvider.getNextData():
+            image = self.ingressProvider.getNextData()
+            while image != None :
                 print(f"Ingress: Reading file {image}")
                 image_path = os.path.join(self.ingressProvider.input_dir, image)
                 self.stage_file_for_process(image_path)
+                image = self.ingressProvider.getNextData()
             print("Finished Reading Data.")
             sleep(2)
 

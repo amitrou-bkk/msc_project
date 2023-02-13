@@ -8,5 +8,12 @@ def convert_to_grayscale(image_file, save_file = False):
      gray= cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
      return gray
+
+def LowesRatioTest(matches, ratio):
+        good_matches = []
+        for m,n in matches:
+            if m.distance < ratio * n.distance:
+                good_matches.append(m)
+        return good_matches
       
     
