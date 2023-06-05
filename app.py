@@ -13,8 +13,8 @@ if __name__ == '__main__':
         if arguments is not None and len(arguments) > 1:
             component = arguments[1]
             if component == "camera_controller":
-                capture = CameraCapture(os.environ["CAMERA_IP"], os.environ["CAMERA_PORT"], False, os.environ["CAMERA_USERNAME"], os.environ["CAMERA_PASSWORD"])
-                if os.environ["ENABLE_CAMERA_STREAM_SIMULATION"].lower() == "true":
+                capture = CameraCapture(os.environ.get("CAMERA_IP"), os.environ.get("CAMERA_PORT"), False, os.environ.get("CAMERA_USERNAME"), os.environ.get("CAMERA_PASSWORD"), os.environ.get("CAMERA_EXTRA_PATH"))
+                if os.environ.get("ENABLE_CAMERA_STREAM_SIMULATION") is not None and os.environ.get("ENABLE_CAMERA_STREAM_SIMULATION").lower() == "true":
                     print("Camera Simulation Started")
                     captureThread = threading.Thread(target = capture.StartSimulation)
                 else:
