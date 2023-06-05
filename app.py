@@ -1,6 +1,10 @@
 from edge_layer.edge_controller import EdgeController, IngressMode
 from device_layer.CameraCapture import CameraCapture
 from image_processing.feature_extraction import FeatureExtractor
+from messaging.message_listener import MessageListener
+from services.model_download_service import ModelDownloadService
+from messaging.azure_queue_messaging_service import AzureMessagingService
+from edge_layer.messaging_controller import MessagingController
 from storage.FileStorage import FileStorage
 from storage.AzureBlobStorage import AzureBlobSorage
 import threading
@@ -25,6 +29,13 @@ if __name__ == '__main__':
                  edgeController = EdgeController(IngressMode.EdgeDataIngressMode.FileSystem)
                  edgeControllerThread = threading.Thread(target = edgeController.startListening)
                  edgeControllerThread.start()
+            elif component == "messaging_controller":
+                storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
+                message_listener = MessageListener("new_trained_data", ModelDownloadService(storage_provider))
+
+                messagingService = AzureMessagingService(os.environ.get("AZ_QUEUE_CONSTR"), os.environ.get("AZ_QUEUE_NAME"))
+                msg_controller =  MessagingController(messagingService, "MessagingController1", [message_listener])
+                msg_controller.startListening()
             elif component == "feature_extractor":
                 if os.environ["STORAGE_PROVIDER"] == "fs":
                     provider = FileStorage()
@@ -33,7 +44,7 @@ if __name__ == '__main__':
                 else:
                   print("Storage Provider was not found")
                   exit()
-                
+
                 feature_extractor = FeatureExtractor(os.environ["INPUT_DATA"], provider)
                 if os.environ["RUN_MODE"] == None or os.environ["RUN_MODE"] == ""  or os.environ["RUN_MODE"] == "CONTINUOUS":
                     extractorThread = threading.Thread(target = feature_extractor.ExtractFeatures, args = [True])
@@ -43,5 +54,6 @@ if __name__ == '__main__':
             else:
                 print("No module found!")
     except KeyboardInterrupt:
-        captureThread.join()
-        edgeControllerThread.join()
+        pass
+        #captureThread.join()
+        #edgeControllerThread.join()

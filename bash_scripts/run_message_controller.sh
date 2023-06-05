@@ -1,0 +1,3 @@
+#!/bin/bash 
+source ../../venv373/bin/activate
+PYTHONPATH="/home/amitrou/msc_project" AZURE_STORAGE_ACCOUNT="https://mlcloudstorageacount.blob.core.windows.net/" AZURE_STORAGE_SAS_TOKEN="sp=rl&st=2023-06-03T09:34:49Z&se=2023-06-05T17:34:49Z&spr=https&sv=2022-11-02&sr=c&sig=%2Bf9nfaA1hlwkWWAI3DttzDFsIJ1qWpBgqb4onlQGHuI%3D" AZ_QUEUE_CONSTR="DefaultEndpointsProtocol=https;AccountName=mlcloudstorageacount;AccountKey=YqZgl8Aiqbj7eeEpwXzs6Vt7m2qk4G9qPjSO800BDo+3z+bXa+91qw32GqMPXqMxxK2rVln7/Npo+AStE/QrzQ==;EndpointSuffix=core.windows.net" AZ_QUEUE_NAME="yolotrainingresults" python3 /home/amitrou/msc_project/src/app.py messaging_controller
