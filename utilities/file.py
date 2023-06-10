@@ -38,4 +38,4 @@ def getDirNameFromFile(file):
 def fileOrDirectoryExists(fileOrDirectory):
     return os.path.exists(fileOrDirectory)
 def createDirectory(directoryPath):
-    os.makedirs(dir)
+    os.makedirs(directoryPath)
