@@ -1,14 +1,23 @@
 from src.services.event_triggered_service import EventTriggeredService, NotificationData
 from src.storage.BaseStorage import BaseStorage
+from utilities.file import (moveFile, getDirNameFromFile, fileOrDirectoryExists, createDirectory)
 import json
 
 class ModelDownloadService(EventTriggeredService):
-    def __init__(self, storageProvider: BaseStorage) -> None:
+    def __init__(self, storageProvider: BaseStorage, saveFileLocation) -> None:
+        self.modelSaveFileLocation = saveFileLocation
         self.storageProvider = storageProvider
         super().__init__()
 
     def Download(self, filePath):
-        self.storageProvider.read_file(filePath)
+        saved_file = self.storageProvider.read_file(filePath)
+        if self.modelSaveFileLocation == None:
+            self.modelSaveFileLocation = getDirNameFromFile(saved_file)
+
+        if not fileOrDirectoryExists( self.modelSaveFileLocation):
+            createDirectory(self.modelSaveFileLocation)
+      
+        moveFile(saved_file, self.modelSaveFileLocation)
 
     def OnNotified(self, notification: NotificationData) -> bool:
         try :

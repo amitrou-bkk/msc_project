@@ -1,6 +1,7 @@
 import json
 import os
 import numpy as np
+import shutil
 
 def get_filename_and_extension(filename):
         file_name, file_extension = os.path.splitext(filename)
@@ -20,3 +21,21 @@ def load_file_to_array(filename):
 def write_text_to_file(text, filename):
     with open(filename, "a") as f:
         f.write(text)
+
+def copyfile(source_file, target_file):
+    shutil.copyfile(source_file, target_file)
+
+def moveFile(source_file, target_file):
+    try:
+        copyfile(source_file, target_file)
+        os.remove(source_file)
+    except Exception as e:
+        print(e)
+
+def getDirNameFromFile(file):
+    return os.path.dirname(file)
+
+def fileOrDirectoryExists(fileOrDirectory):
+    return os.path.exists(fileOrDirectory)
+def createDirectory(directoryPath):
+    os.makedirs(dir)

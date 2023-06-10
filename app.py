@@ -31,7 +31,7 @@ if __name__ == '__main__':
                  edgeControllerThread.start()
             elif component == "messaging_controller":
                 storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
-                message_listener = MessageListener("new_trained_data", ModelDownloadService(storage_provider))
+                message_listener = MessageListener("new_trained_data", ModelDownloadService(storage_provider, os.environ.get("ML_MODEL_WEIGHTS_DIR")))
 
                 messagingService = AzureMessagingService(os.environ.get("AZ_QUEUE_CONSTR"), os.environ.get("AZ_QUEUE_NAME"))
                 msg_controller =  MessagingController(messagingService, "MessagingController1", [message_listener])

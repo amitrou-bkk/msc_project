@@ -30,6 +30,7 @@ class AzureBlobSorage(BaseStorage):
          return False
 
     def read_file(self, file):
+        download_file_path = None
         container, blobfileName = str(file).split(":")
 
         self.container_client = self.seviceClient.get_container_client(container)
@@ -44,4 +45,6 @@ class AzureBlobSorage(BaseStorage):
                  download_file_path = os.path.join(self.LOCAL_BLOB_PATH, blobfileName)
                  with open(download_file_path, "wb") as file:
                     file.write(bytes)
-                 return download_file_path
+                 break
+                
+        return download_file_path
