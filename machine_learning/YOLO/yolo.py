@@ -84,7 +84,7 @@ class LocalYoloModel:
     def __init__(self, custom_weights_path, classes):
 
         if not os.path.exists(custom_weights_path):
-            raise Exception("Model was not found")
+            raise Exception("Weights for model where not found")
     
         self.weight_file = custom_weights_path
 

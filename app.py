@@ -5,6 +5,7 @@ from messaging.message_listener import MessageListener
 from services.model_download_service import ModelDownloadService
 from messaging.azure_queue_messaging_service import AzureMessagingService
 from edge_layer.messaging_controller import MessagingController
+from src.edge_layer.inference_controller import InferenceController
 from storage.FileStorage import FileStorage
 from storage.AzureBlobStorage import AzureBlobSorage
 import threading
@@ -29,13 +30,19 @@ if __name__ == '__main__':
                  edgeController = EdgeController(IngressMode.EdgeDataIngressMode.FileSystem)
                  edgeControllerThread = threading.Thread(target = edgeController.startListening)
                  edgeControllerThread.start()
+            elif component == "inference_controller":
+                 inference = InferenceController(os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), None)
+                 inference.start()
             elif component == "messaging_controller":
-                storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
-                message_listener = MessageListener("new_trained_data", ModelDownloadService(storage_provider, os.environ.get("ML_MODEL_WEIGHTS_DIR")))
+                    storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
 
-                messagingService = AzureMessagingService(os.environ.get("AZ_QUEUE_CONSTR"), os.environ.get("AZ_QUEUE_NAME"))
-                msg_controller =  MessagingController(messagingService, "MessagingController1", [message_listener])
-                msg_controller.startListening()
+                    modelDownloadService = ModelDownloadService(storage_provider, os.environ.get("ML_MODEL_WEIGHTS_DIR"))
+                    message_listener_topic = "new_trained_data"
+                    message_listener = MessageListener(message_listener_topic, modelDownloadService)
+
+                    messagingService = AzureMessagingService(os.environ.get("AZ_QUEUE_CONSTR"), os.environ.get("AZ_QUEUE_NAME"))
+                    msg_controller =  MessagingController(messagingService, "MessagingController1", [message_listener])
+                    msg_controller.startListening()
             elif component == "feature_extractor":
                 if os.environ["STORAGE_PROVIDER"] == "fs":
                     provider = FileStorage()
