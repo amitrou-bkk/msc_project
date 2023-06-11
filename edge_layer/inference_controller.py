@@ -3,9 +3,9 @@ from src.machine_learning.YOLO.yolo import LocalYoloModel
 import os
 
 class InferenceController():
-    def __init__(self, input_images_dir, weight_dir, output_results_dir = ModuleNotFoundError) -> None:
+    def __init__(self, model_path, input_images_dir, weight_dir, output_results_dir = ModuleNotFoundError) -> None:
         weight = os.path.join(weight_dir, os.listdir(weight_dir)[0]) 
-        self.model = LocalYoloModel(weight,  ['mask', 'no mask'])
+        self.model = LocalYoloModel(model_path, weight,  ['mask', 'no mask'])
         self.image_repo = input_images_dir
 
     def start(self):

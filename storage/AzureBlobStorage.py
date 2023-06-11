@@ -17,8 +17,10 @@ class AzureBlobSorage(BaseStorage):
        return [f"{path}:{blob.name}" for blob in blob_list]
    
     
-    def write_file(self, path):
-        pass
+    def write_file(self, input_file, container_name):
+        self.container_client = self.seviceClient.get_container_client(container= container_name) 
+        with open(file=input_file, mode="rb") as data:
+            self.container_client.upload_blob(data)
 
     def path_exists(self, path):
          containers = self.seviceClient.list_containers()

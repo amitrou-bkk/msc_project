@@ -31,7 +31,7 @@ if __name__ == '__main__':
                  edgeControllerThread = threading.Thread(target = edgeController.startListening)
                  edgeControllerThread.start()
             elif component == "inference_controller":
-                 inference = InferenceController(os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), None)
+                 inference = InferenceController(os.environ.get("YOLO_MODEL"), os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), None)
                  inference.start()
             elif component == "messaging_controller":
                     storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))

@@ -80,18 +80,17 @@ class YOLOEmbeddedOpenCv:
         return results
 
 class LocalYoloModel:
-    __modelPath = "/home/amitrou/yolov5"
-    def __init__(self, custom_weights_path, classes):
+    def __init__(self, yolo_model_path, custom_weights_path, classes):
 
         if not os.path.exists(custom_weights_path):
             raise Exception("Weights for model where not found")
     
         self.weight_file = custom_weights_path
 
-        if not os.path.exists(LocalYoloModel.__modelPath):
+        if not os.path.exists(yolo_model_path):
             raise Exception("Model was not found")
         
-        self.model = torch.hub.load(LocalYoloModel.__modelPath, 'custom', path=custom_weights_path, source='local') 
+        self.model = torch.hub.load(yolo_model_path, 'custom', path=custom_weights_path, source='local') 
         self.classes = classes
 
     def predict(self, imagePath, showPrediction = False, confidence_base = 0):
@@ -127,7 +126,7 @@ class LocalYoloModel:
         else:
             return result
     
-if __name__ == "__main__":
-    print("Running example inference")
-    model = LocalYoloModel("/home/amitrou/msc_project/src/machine_learning/YOLO/custom_weights/20230521110311-best.pt", ['mask', 'no mask'])
-    model.predict( os.path.join(os.path.dirname(__file__), "image_510.jpg"), True)
+# if __name__ == "__main__":
+#     print("Running example inference")
+#     model = LocalYoloModel("/home/amitrou/msc_project/src/machine_learning/YOLO/custom_weights/20230521110311-best.pt", ['mask', 'no mask'])
+#     model.predict( os.path.join(os.path.dirname(__file__), "image_510.jpg"), True)
