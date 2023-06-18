@@ -37,15 +37,19 @@ class CloudUploadBlobService(EventTriggeredService):
         data = json.loads(notification.data)
         local_file = data["file"]
         target_container = data["container"]
+
         if not fileUtils.fileOrDirectoryExists(local_file):
             return False
+        
         try:
             file_data = fileUtils.read_json(file_path= local_file)
             transformed_data = self.TransformResults(file_data)
             print(transformed_data)
             self.UploadInferenceResultsAsBlob(transformed_data, container_name= target_container)
+            return True
         except Exception as ex:
             print(ex)
+            return False
 
 
         

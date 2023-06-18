@@ -31,6 +31,6 @@ class InferenceController():
                     else:
                         print(os.path.join(self.output_results_dir, finame + ".json"))
                         fileUtils.write_json(results, os.path.join(self.output_results_dir, finame + ".json"))
-                    #os.remove(img)
+                    os.remove(img)
             sleep(3)
             
