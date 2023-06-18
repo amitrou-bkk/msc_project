@@ -11,6 +11,7 @@ class NotificationService:
 
     def notify(self, data:dict):
             topic = data["topic"]
+            print(f"Topic:{topic} found")
             subscribers_to_notify = [sub for sub in self.subscibers if sub["topic"] == topic]
             for subscriber in subscribers_to_notify:
                  notification_data = NotificationData(data["content"])

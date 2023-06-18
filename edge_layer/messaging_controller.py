@@ -2,7 +2,10 @@ from src.messaging.messaging_service import MessagingService
 from time import sleep
 from src.services.notification_service import NotificationService
 import uuid
+from src.storage.FileStorage import FileStorage
 import src.utilities.string_utilities as utils
+import json
+import os
 
 class MessagingController:
     POLL_INTERVAL = 5
@@ -30,5 +33,24 @@ class MessagingController:
                 else:
                     self.failedMessages.append(self.NotificationService.failedSubscribers)
             sleep(5)
+
+    def startScanInferenceResults(self, inference_results_dir_path, target_container_name):
+        print("Started reading inference directory")
+        if inference_results_dir_path == None or inference_results_dir_path == "":
+            print("Inference directory not specified")
+        file_storage = FileStorage()
+       
+        while True:
+            files = file_storage.read_directory(inference_results_dir_path)
+            for file in files:
+                print(f"Found file {file}")
+                notification_content = json.dumps({"file": file, "container": target_container_name})
+                temp_message = {"messageId": str(uuid.uuid4()), "content" : notification_content, "topic": "new_data_to_cloud"}
+                self.NotificationService.notify(temp_message)
+                os.remove(file)
+            
+
+
+            
             
     

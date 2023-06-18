@@ -12,6 +12,11 @@ def read_json(file_path):
         data = json.load(f)
     return data
 
+def write_json(contents, dest_file):
+    json_object = json.dumps(contents, indent=4)
+    with open(dest_file, "w") as outfile:
+        outfile.write(json_object)
+
 def save_array_to_file(arr, filename):
    np.save(filename, arr)
 
@@ -37,5 +42,6 @@ def getDirNameFromFile(file):
 
 def fileOrDirectoryExists(fileOrDirectory):
     return os.path.exists(fileOrDirectory)
+
 def createDirectory(directoryPath):
     os.makedirs(directoryPath)

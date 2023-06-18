@@ -6,6 +6,7 @@ from services.model_download_service import ModelDownloadService
 from messaging.azure_queue_messaging_service import AzureMessagingService
 from edge_layer.messaging_controller import MessagingController
 from src.edge_layer.inference_controller import InferenceController
+from src.services.cloud_upload_service import CloudUploadBlobService
 from storage.FileStorage import FileStorage
 from storage.AzureBlobStorage import AzureBlobSorage
 import threading
@@ -31,18 +32,29 @@ if __name__ == '__main__':
                  edgeControllerThread = threading.Thread(target = edgeController.startListening)
                  edgeControllerThread.start()
             elif component == "inference_controller":
-                 inference = InferenceController(os.environ.get("YOLO_MODEL"), os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), None)
+                 inference = InferenceController(os.environ.get("YOLO_MODEL"), os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), os.environ.get("ML_MODEL_RESULTS_DIR"))
                  inference.start()
             elif component == "messaging_controller":
+                    message_listeners = []
+
+                    # Azure Queue registration message listener
                     storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
-
                     modelDownloadService = ModelDownloadService(storage_provider, os.environ.get("ML_MODEL_WEIGHTS_DIR"))
-                    message_listener_topic = "new_trained_data"
-                    message_listener = MessageListener(message_listener_topic, modelDownloadService)
-
+                    message_listener_topic_download_service = "new_trained_data"
+                    message_listener_download_service = MessageListener(message_listener_topic_download_service, modelDownloadService)
                     messagingService = AzureMessagingService(os.environ.get("AZ_QUEUE_CONSTR"), os.environ.get("AZ_QUEUE_NAME"))
-                    msg_controller =  MessagingController(messagingService, "MessagingController1", [message_listener])
-                    msg_controller.startListening()
+                    message_listeners.append(message_listener_download_service)
+
+                    # InferenceResults registration message listeners
+                    
+                    cloud_upload_service = CloudUploadBlobService(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_INF_RESULTS_STORAGE_SAS_TOKEN"))
+                    message_listener_topic_cloud_upload_service = "new_data_to_cloud"
+                    message_listener_cloud_upload_service = MessageListener(message_listener_topic_cloud_upload_service, cloud_upload_service)
+                    message_listeners.append(message_listener_cloud_upload_service)
+
+                    msg_controller =  MessagingController(messagingService, "MessagingController1", message_listeners)
+                    #msg_controller.startListening()
+                    msg_controller.startScanInferenceResults(os.environ.get("ML_MODEL_RESULTS_DIR"), os.environ.get("ML_MODEL_RESULTS_CONTAINER"))
             elif component == "feature_extractor":
                 if os.environ["STORAGE_PROVIDER"] == "fs":
                     provider = FileStorage()
