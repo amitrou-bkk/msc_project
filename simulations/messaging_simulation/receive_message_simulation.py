@@ -11,4 +11,4 @@ message_listener = MessageListener("new_trained_data", ModelDownloadService(stor
 
 messagingService = AzureMessagingService(config.connectionString, config.queueName)
 msg_controller =  MessagingController(messagingService, "MessagingController1", [message_listener])
-msg_controller.startListening()
+msg_controller.startListeningToTrainModelChanges()
