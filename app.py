@@ -1,4 +1,4 @@
-from edge_layer.edge_controller import EdgeController, IngressMode
+from src.edge_layer.ingestion_controller import IngestionController, IngressMode
 from device_layer.CameraCapture import CameraCapture
 from image_processing.feature_extraction import FeatureExtractor
 from messaging.message_listener import MessageListener
@@ -28,10 +28,9 @@ if __name__ == '__main__':
                     print("Real Camera Feed Started")
                     captureThread = threading.Thread(target = capture.Start)
                 captureThread.start()
-            elif component == "edge":
-                 edgeController = EdgeController(IngressMode.EdgeDataIngressMode.FileSystem)
-                 edgeControllerThread = threading.Thread(target = edgeController.startListening)
-                 edgeControllerThread.start()
+            elif component == "ingest_controller":
+                 edgeController = IngestionController()
+                 edgeController.startListening()
             elif component == "inference_controller":
                  inference = InferenceController(os.environ.get("YOLO_MODEL"), os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), os.environ.get("ML_MODEL_RESULTS_DIR"))
                  inference.start()
@@ -61,14 +60,10 @@ if __name__ == '__main__':
                     message_listener_image_ingress_service = MessageListener(message_listener_topic_image_ingress_service, image_ingress_service)
                     message_listeners.append(message_listener_image_ingress_service)
 
-
-
                     msg_controller =  MessagingController(messagingService, "MessagingController1", message_listeners)
-                    #msg_controller.startListening()
-                    #msg_controller.startScanInferenceResults(os.environ.get("ML_MODEL_RESULTS_DIR"), os.environ.get("ML_MODEL_RESULTS_CONTAINER"))
                     cloudMessagesListenerThread = threading.Thread(target = msg_controller.startListeningToTrainModelChanges)
                     edgeMessageInferenceListenerThread = threading.Thread(target= msg_controller.startListeningToNewInferenceData, args = (os.environ.get("ML_MODEL_RESULTS_DIR"), os.environ.get("ML_MODEL_RESULTS_CONTAINER"),))
-                    edgeCapturedImageIngestionListenerThread = threading.Thread(target= msg_controller.startListeningToReadyImagesForInference, args = ("/app/edge_shared_files/esp32",))
+                    edgeCapturedImageIngestionListenerThread = threading.Thread(target= msg_controller.startListeningToReadyImagesForInference, args = (os.environ.get("INCOMING_IMG_REPO"),))
                     
                     cloudMessagesListenerThread.start()
                     edgeMessageInferenceListenerThread.start()

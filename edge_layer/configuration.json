@@ -1,0 +1,10 @@
+{
+"ingress_configurations":
+    [
+        {
+            "mode" : "FileSystem",
+            "active": true,
+            "parameters": { "input_dir":"/app/edge_shared_files/esp32", "process_dir":"/app/edge_shared_files/process_data"}
+        }
+    ]
+}

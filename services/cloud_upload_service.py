@@ -11,7 +11,8 @@ class CloudUploadBlobService(EventTriggeredService):
 
     def UploadInferenceResultsAsBlob(self, results, container_name):
         local_file_name = str(uuid.uuid4()) + ".json"
-
+        if results != None and len(results) == 0:
+            return 
         with open(local_file_name, "w") as file:
             json.dump(results, file)
         
