@@ -87,7 +87,10 @@ class IngestionController():
         while self.isStarted:
             try:
                 print("Start Reading Data from Source")
-
+                print("Leftovers>>>>>>>>>")
+                print(keyframe_images)
+                print(non_keyframe_images)
+                print("Leftovers>>>>>>>>>")
                 self.__removeNonKeyFrames(non_keyframe_images, 0) # tranfer leftovers
                 self.__stageKeyframes(keyframe_images, 0) # tranfer leftovers
 
@@ -95,7 +98,7 @@ class IngestionController():
                 
                 ingressProvider.read()
                 image = ingressProvider.getNextData()
-                
+                image_count = 0
                 while image != None :
                     print(f"Ingress: Reading file {image}")
                     image_path = os.path.join(ingressProvider.input_dir, image)
@@ -106,9 +109,13 @@ class IngestionController():
                     else:
                         non_keyframe_images.append(image_path)
 
-                    if len(keyframe_images) + len(non_keyframe_images) == 5:
+                    image_count = image_count + 1
+                    
+                    if image_count == 5:
+                       print("Partial keyframe processing>>>>>>>>>")
                        self.__removeNonKeyFrames(non_keyframe_images)
                        self.__stageKeyframes(keyframe_images)
+                       image_count = 0
                        
                     last_image_path = image_path
                     image = ingressProvider.getNextData()
