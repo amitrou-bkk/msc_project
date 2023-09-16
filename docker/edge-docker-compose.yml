@@ -7,37 +7,37 @@ services:
     volumes:
         - /home/amitrou/e_results:/app/edge_shared_files
      
-  edge-ingress-controller-app:
-    build: 
-        context: ..
-        dockerfile: ./docker/edge-ingress-controller.dockerfile
-    depends_on:
-      - "edge-camera-controller-app-01"
-    volumes:
-        - /home/amitrou/e_results:/app/edge_shared_files
+  # edge-ingress-controller-app:
+  #   build: 
+  #       context: ..
+  #       dockerfile: ./docker/edge-ingress-controller.dockerfile
+  #   depends_on:
+  #     - "edge-camera-controller-app-01"
+  #   volumes:
+  #       - /home/amitrou/e_results:/app/edge_shared_files
   
-  edge-extractor-app:
-    build: 
-       context: ..
-       dockerfile: ./docker/edge-feature-extraction.dockerfile
-    depends_on:
-      - "edge-ingress-controller-app"
-    volumes:
-        - /home/amitrou/e_results:/app/edge_shared_files
+  # edge-extractor-app:
+  #   build: 
+  #      context: ..
+  #      dockerfile: ./docker/edge-feature-extraction.dockerfile
+  #   depends_on:
+  #     - "edge-ingress-controller-app"
+  #   volumes:
+  #       - /home/amitrou/e_results:/app/edge_shared_files
 
-  edge-messanger-app:
-    build: 
-       context: ..
-       dockerfile: ./docker/edge-message-controller.dockerfile
-    volumes:
-        - /home/amitrou/e_results:/app/edge_shared_files
+  # edge-messanger-app:
+  #   build: 
+  #      context: ..
+  #      dockerfile: ./docker/edge-message-controller.dockerfile
+  #   volumes:
+  #       - /home/amitrou/e_results:/app/edge_shared_files
 
-  edge-inference-app:
-    build: 
-       context: ..
-       dockerfile: ./docker/edge-inference-controller.dockerfile
-    volumes:
-        - /home/amitrou/e_results:/app/edge_shared_files
+  # edge-inference-app:
+  #   build: 
+  #      context: ..
+  #      dockerfile: ./docker/edge-inference-controller.dockerfile
+  #   volumes:
+  #       - /home/amitrou/e_results:/app/edge_shared_files
 
 # volumes:
 #   shared-data:

@@ -6,7 +6,7 @@ RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install -r requirements.txt
 COPY ./ ./src
 ENV PYTHONPATH="/app"
-ENV CAMERA_ID="PHONE_CAM_01"
+ENV CAMERA_ID="CAMERA_01"
 ENV CAMERA_IP=""
 ENV CAMERA_PORT=""
 ENV CAMERA_USERNAME=""

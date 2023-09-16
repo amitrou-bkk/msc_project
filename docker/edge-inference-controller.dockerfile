@@ -4,7 +4,7 @@ COPY requirements.txt requirements.txt
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6 git  -y
 RUN git clone https://github.com/ultralytics/yolov5.git
-RUN pip install -r requirements.txt
+RUN pip install -r  requirements.txt
 COPY ./ ./src
 ENV PYTHONPATH="/app"
 ENV STORAGE_PROVIDER="fs"
