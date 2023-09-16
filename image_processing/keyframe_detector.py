@@ -43,32 +43,24 @@ class KeyFrameDetector:
         return keyframes
     
     def PBT(self, previous_frame_image, current_frame_image, threshold = 0.5):
-        prv_img = cv2.cvtColor(cv2.imread(previous_frame_image), cv2.COLOR_BGR2GRAY)
-        curr_img =  cv2.cvtColor(cv2.imread(current_frame_image), cv2.COLOR_BGR2GRAY)
-
-        diff = cv2.absdiff(curr_img, prv_img)
+        diff = cv2.absdiff(current_frame_image, previous_frame_image)
         countOfNonZeros = np.count_nonzero(diff)
-        proportional_pixel_diff = (countOfNonZeros / (curr_img.shape[0] * curr_img.shape[1]))
+        proportional_pixel_diff = (countOfNonZeros / (current_frame_image.shape[0] * current_frame_image.shape[1]))
         return proportional_pixel_diff > threshold
 
     def HBT(self, previous_frame_image, current_frame_image):
-        prv_img = cv2.imread(previous_frame_image, cv2.IMREAD_GRAYSCALE)
-        prv_img_hist = cv2.calcHist([prv_img], [0], None, [8], [0, 256])
+        prv_img_hist = cv2.calcHist([previous_frame_image], [0], None, [8], [0, 256])
         prv_img_hist = cv2.normalize(prv_img_hist, None).flatten()
-        #plt.plot(current_img_hist)
 
-        curr_img =  cv2.imread(current_frame_image, cv2.IMREAD_GRAYSCALE)
-        curr_img_hist = cv2.calcHist([curr_img], [0], None, [8],[0, 256])
+        curr_img_hist = cv2.calcHist([current_frame_image], [0], None, [8],[0, 256])
         curr_img_hist = cv2.normalize(curr_img_hist, None).flatten()
 
         abs_frame_difference = cv2.absdiff(current_frame_image, previous_frame_image) 
         mean = np.mean(abs_frame_difference)
         std = np.std(abs_frame_difference)
         th =  std + (mean * 1)
-        #plt.plot(next_img_hist)
 
-        histogramDifference = cv2.compareHist(curr_img_hist, prv_img, cv2.HISTCMP_INTERSECT)
-        # histogramSimilarity = cv2.compareHist(next_img_hist, current_img_hist, cv2.HISTCMP_CORREL)
+        histogramDifference = cv2.compareHist(curr_img_hist, prv_img_hist, cv2.HISTCMP_INTERSECT)
         
         print(f"Keyframe: Th:{th} HDiff: {histogramDifference} Correl:{histogramDifference} {current_frame_image}")
 
