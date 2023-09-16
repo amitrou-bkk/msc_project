@@ -1,14 +1,12 @@
-from src.edge_layer.ingestion_controller import IngestionController, IngressMode
-from src.edge_layer.camera_controller import CameraController      
-from image_processing.feature_extraction import FeatureExtractor
+from src.edge_layer.controllers.ingestion_controller import IngestionController
+from src.edge_layer.controllers.camera_controller import CameraController      
 from messaging.message_listener import MessageListener
 from services.model_download_service import ModelDownloadService
 from messaging.azure_queue_messaging_service import AzureMessagingService
-from edge_layer.messaging_controller import MessagingController
-from src.edge_layer.inference_controller import InferenceController
+from edge_layer.controllers.messaging_controller import MessagingController
+from src.edge_layer.controllers.inference_controller import InferenceController
 from src.services.cloud_upload_service import CloudUploadBlobService
 from src.services.ingress_image_service import IngressImageService
-from storage.FileStorage import FileStorage
 from storage.AzureBlobStorage import AzureBlobStorage
 import threading
 import os
@@ -68,22 +66,6 @@ if __name__ == '__main__':
                     cloudMessagesListenerThread.start()
                     edgeMessageInferenceListenerThread.start()
                     edgeCapturedImageIngestionListenerThread.start()
-                   
-            elif component == "feature_extractor":
-                if os.environ["STORAGE_PROVIDER"] == "fs":
-                    provider = FileStorage()
-                elif os.environ["STORAGE_PROVIDER"] == "azure":
-                    provider = AzureBlobStorage(os.environ["AZURE_STORAGE_ACCOUNT"], os.environ["AZURE_STORAGE_SAS_TOKEN"])
-                else:
-                  print("Storage Provider was not found")
-                  exit()
-
-                feature_extractor = FeatureExtractor(os.environ["INPUT_DATA"], provider)
-                if os.environ["RUN_MODE"] == None or os.environ["RUN_MODE"] == ""  or os.environ["RUN_MODE"] == "CONTINUOUS":
-                    extractorThread = threading.Thread(target = feature_extractor.ExtractFeatures, args = [True])
-                    extractorThread.start()
-                elif os.environ["RUN_MODE"].lower() ==  "on_demand":
-                    feature_extractor.ExtractFeatures()
             else:
                 print("No module found!")
     except KeyboardInterrupt:

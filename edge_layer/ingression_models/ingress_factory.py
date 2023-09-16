@@ -1,5 +1,5 @@
 import os
-from src.edge_layer.ingression_mode import EdgeDataIngressMode 
+from src.edge_layer.ingression_models.ingression_mode import EdgeDataIngressMode 
 import src.edge_layer.ingression_models.IngressionFileSystem as IngressFs
 
 class IngressFactory():

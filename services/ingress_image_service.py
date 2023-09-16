@@ -1,7 +1,7 @@
 import json
 import os
 import shutil
-import src.edge_layer.ingression_mode as IngressMode
+import src.edge_layer.ingression_models.ingression_mode as IngressMode
 from src.edge_layer.ingression_models.ingress_factory import IngressFactory
 from src.services.event_triggered_service import EventTriggeredService, NotificationData
 import src.utilities.file as fileUtils

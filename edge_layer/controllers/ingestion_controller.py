@@ -1,7 +1,7 @@
 import os
 import shutil
 import threading
-from src.edge_layer.ingression_mode import EdgeDataIngressMode
+from src.edge_layer.ingression_models.ingression_mode import EdgeDataIngressMode
 from src.edge_layer.ingression_models.IngressionBase import IngressionBase
 from src.edge_layer.ingression_models.ingress_factory import IngressFactory
 import src.utilities.file as fileUtils
