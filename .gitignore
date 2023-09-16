@@ -161,3 +161,4 @@ cython_debug/
 test_face_mask_images
 test_keyframes_extraction
 input_data
+simulations

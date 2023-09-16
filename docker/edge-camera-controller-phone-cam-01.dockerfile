@@ -1,9 +1,9 @@
 FROM python:3.8.10
 WORKDIR /app
-COPY requirements.txt requirements.txt
+COPY requirements-copy.txt requirements-copy.txt
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
-RUN pip install -r requirements.txt
+RUN pip install -r requirements-copy.txt
 COPY ./ ./src
 ENV PYTHONPATH="/app"
 ENV CAMERA_ID="CAMERA_01"
