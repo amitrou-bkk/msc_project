@@ -2,12 +2,12 @@ import json
 import uuid
 import os
 from src.services.event_triggered_service import EventTriggeredService, NotificationData
-from src.storage.AzureBlobStorage import AzureBlobSorage
+from src.storage.AzureBlobStorage import AzureBlobStorage
 import src.utilities.file as fileUtils
 
 class CloudUploadBlobService(EventTriggeredService):
     def __init__(self, storage_account, sas_token) -> None:
-        self.blob_service = AzureBlobSorage(storage_account, sas_token)
+        self.blob_service = AzureBlobStorage(storage_account, sas_token)
 
     def UploadInferenceResultsAsBlob(self, results, container_name):
         local_file_name = str(uuid.uuid4()) + ".json"

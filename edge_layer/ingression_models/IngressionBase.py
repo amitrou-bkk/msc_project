@@ -1,7 +1,7 @@
 import abc
 from abc import ABC, abstractmethod
 
-class DataIngressionConfiguration(ABC):
+class IngressionBase(ABC):
     
     @abstractmethod
     def read(self):

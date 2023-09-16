@@ -25,5 +25,19 @@ services:
     volumes:
         - /home/amitrou/e_results:/app/edge_shared_files
 
+  edge-messanger-app:
+    build: 
+       context: ..
+       dockerfile: ./docker/edge-message-controller.dockerfile
+    volumes:
+        - /home/amitrou/e_results:/app/edge_shared_files
+
+  edge-inference-app:
+    build: 
+       context: ..
+       dockerfile: ./docker/edge-inference-controller.dockerfile
+    volumes:
+        - /home/amitrou/e_results:/app/edge_shared_files
+
 # volumes:
 #   shared-data:

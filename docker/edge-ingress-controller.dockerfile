@@ -8,4 +8,4 @@ COPY ./ ./src
 ENV PYTHONPATH="/app"
 ENV STORAGE_PROVIDER="fs"
 ENV INPUT_DATA="/app/edge_shared_files/PHONE_CAM_01"
-CMD ["python3", "./src/app.py", "edge"]
+CMD ["python3", "./src/app.py", "ingest_controller"]

@@ -1,5 +1,5 @@
 from src.edge_layer.ingestion_controller import IngestionController, IngressMode
-from device_layer.CameraCapture import CameraCapture
+from src.edge_layer.camera_controller import CameraController      
 from image_processing.feature_extraction import FeatureExtractor
 from messaging.message_listener import MessageListener
 from services.model_download_service import ModelDownloadService
@@ -9,7 +9,7 @@ from src.edge_layer.inference_controller import InferenceController
 from src.services.cloud_upload_service import CloudUploadBlobService
 from src.services.ingress_image_service import IngressImageService
 from storage.FileStorage import FileStorage
-from storage.AzureBlobStorage import AzureBlobSorage
+from storage.AzureBlobStorage import AzureBlobStorage
 import threading
 import os
 import sys
@@ -20,7 +20,7 @@ if __name__ == '__main__':
         if arguments is not None and len(arguments) > 1:
             component = arguments[1]
             if component == "camera_controller":
-                capture = CameraCapture(os.environ.get("CAMERA_IP"), os.environ.get("CAMERA_PORT"), False, os.environ.get("CAMERA_USERNAME"), os.environ.get("CAMERA_PASSWORD"), os.environ.get("CAMERA_EXTRA_PATH"))
+                capture = CameraController(os.environ.get("CAMERA_IP"), os.environ.get("CAMERA_PORT"), False, os.environ.get("CAMERA_USERNAME"), os.environ.get("CAMERA_PASSWORD"), os.environ.get("CAMERA_EXTRA_PATH"))
                 if os.environ.get("ENABLE_CAMERA_STREAM_SIMULATION") is not None and os.environ.get("ENABLE_CAMERA_STREAM_SIMULATION").lower() == "true":
                     print("Camera Simulation Started")
                     captureThread = threading.Thread(target = capture.StartSimulation)
@@ -29,8 +29,8 @@ if __name__ == '__main__':
                     captureThread = threading.Thread(target = capture.Start)
                 captureThread.start()
             elif component == "ingest_controller":
-                 edgeController = IngestionController()
-                 edgeController.startListening()
+                 ingestionController = IngestionController()
+                 ingestionController.start()
             elif component == "inference_controller":
                  inference = InferenceController(os.environ.get("YOLO_MODEL"), os.environ.get("IMG_PREDICTION_REPO"),  os.environ.get("ML_MODEL_WEIGHTS_DIR"), os.environ.get("ML_MODEL_RESULTS_DIR"))
                  inference.start()
@@ -38,7 +38,7 @@ if __name__ == '__main__':
                     message_listeners = []
 
                     # Azure Queue registration message listener
-                    storage_provider = AzureBlobSorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
+                    storage_provider = AzureBlobStorage(os.environ.get("AZURE_STORAGE_ACCOUNT"), os.environ.get("AZURE_STORAGE_SAS_TOKEN"))
                     modelDownloadService = ModelDownloadService(storage_provider, os.environ.get("ML_MODEL_WEIGHTS_DIR"))
                     message_listener_topic_download_service = "new_trained_data"
                     message_listener_download_service = MessageListener(message_listener_topic_download_service, modelDownloadService)
@@ -73,7 +73,7 @@ if __name__ == '__main__':
                 if os.environ["STORAGE_PROVIDER"] == "fs":
                     provider = FileStorage()
                 elif os.environ["STORAGE_PROVIDER"] == "azure":
-                    provider = AzureBlobSorage(os.environ["AZURE_STORAGE_ACCOUNT"], os.environ["AZURE_STORAGE_SAS_TOKEN"])
+                    provider = AzureBlobStorage(os.environ["AZURE_STORAGE_ACCOUNT"], os.environ["AZURE_STORAGE_SAS_TOKEN"])
                 else:
                   print("Storage Provider was not found")
                   exit()

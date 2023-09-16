@@ -1,4 +1,3 @@
-# Using Android IP Webcam video .jpg stream (tested) in Python2 OpenCV3
 import cv2
 import numpy as np
 import time
@@ -8,9 +7,7 @@ import requests
 from datetime import datetime
 from PIL import Image
 
-
-class CameraCapture:
-
+class CameraController:
     def __init__(self, camera_ip, camera_port = None , isHttps = False, user = None, password = None, camera_stream_path = None):
         self.url = "https://" if isHttps else "http://"
         self.url += f"{user}:{password}@" if user is not None and password is not None else ""

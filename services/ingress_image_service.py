@@ -14,7 +14,7 @@ class IngressImageService(EventTriggeredService):
         self.allowedExtensions = [".jpg",".tiff", ".jpeg", ".img"]
         super().__init__()
 
-    def stage_file_for_inference(self, img):
+    def StageFileForInference(self, img):
        print(f"Start Staging of {img}")
        if (not os.path.exists(self.inference_dir)):
             os.mkdir(self.inference_dir)
@@ -31,7 +31,7 @@ class IngressImageService(EventTriggeredService):
     def OnNotified(self, notification: NotificationData) -> bool:
         try :
             data = json.loads(notification.data)
-            self.stage_file_for_inference(data["file"])
+            self.StageFileForInference(data["file"])
             return True
         except Exception as ex:
             print(ex)

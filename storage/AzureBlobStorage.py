@@ -2,7 +2,7 @@ from azure.storage.blob import BlobServiceClient
 from src.storage.BaseStorage import BaseStorage
 import os
 
-class AzureBlobSorage(BaseStorage):
+class AzureBlobStorage(BaseStorage):
     def __init__(self, account, sas_token) -> None:
         self.seviceClient = BlobServiceClient(account_url=account, credential=sas_token)
         self.LOCAL_BLOB_PATH = "temp_azure"

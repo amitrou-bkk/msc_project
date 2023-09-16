@@ -1,9 +1,9 @@
 from dataclasses import dataclass
-from src.edge_layer.ingression_models.IngressionBase import DataIngressionConfiguration
+from src.edge_layer.ingression_models.IngressionBase import IngressionBase
 import src.utilities.file as fileUtils
 import os
 
-class FileSystem(DataIngressionConfiguration):
+class FileSystem(IngressionBase):
 
     def __init__(self, input_dir):
         self.input_dir = input_dir

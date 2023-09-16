@@ -1,9 +1,8 @@
-
 import os
 import shutil
 import threading
-import src.edge_layer.ingression_mode as IngressMode
-from src.edge_layer.ingression_models.IngressionBase import DataIngressionConfiguration
+from src.edge_layer.ingression_mode import EdgeDataIngressMode
+from src.edge_layer.ingression_models.IngressionBase import IngressionBase
 from src.edge_layer.ingression_models.ingress_factory import IngressFactory
 import src.utilities.file as fileUtils
 from src.image_processing.keyframe_detector import KeyFrameDetector
@@ -13,27 +12,27 @@ class IngestionController():
     
     def __init__(self):
         self.isStarted = False
-        self.process_dir = "/app/edge_shared_files/process_data"
-        self.allowedExtensions = [".jpg",".tiff", ".jpeg", ".img"]
+        self.ingested_files_out_dir = "/app/edge_shared_files/process_data"
+        self.allowedIngestFileExtensions = [".jpg",".tiff", ".jpeg", ".img"]
         self.keyframe_extractor = KeyFrameDetector()
-
+        self.factory = IngressFactory()
         self.threads = []
 
     def stage_file_for_process(self, img):
        print(f"Start Staging of {img}")
-       if (not os.path.exists(self.process_dir)):
-            os.mkdir(self.process_dir)
+       if (not os.path.exists(self.ingested_files_out_dir)):
+            os.mkdir(self.ingested_files_out_dir)
 
        file_name, file_extension = fileUtils.get_filename_and_extension(img)
 
-       if (file_extension not in self.allowedExtensions):
+       if (file_extension not in self.allowedIngestFileExtensions):
             return
        
-       staged_file = os.path.join(self.process_dir, os.path.basename(file_name) + file_extension)
+       staged_file = os.path.join(self.ingested_files_out_dir, os.path.basename(file_name) + file_extension)
        shutil.move(img, staged_file)
        print(f"Staged to Staging of {staged_file}")
 
-    def startListening(self):
+    def start(self):
         self.isStarted = True
         print("Edge Controller Started.")
         for ingestionProvider in self.__getIngestionTypesFromConfiguration():
@@ -44,26 +43,28 @@ class IngestionController():
              ingestion_thread.start()
 
 
-    def stopListening(self):
+    def stop(self):
          print("Edge Controller Ending silently.")
          self.isStarted = False
          for thread in self.threads:
              thread.join()
 
     def __getIngestionTypesFromConfiguration(self):
-        configurations = []
-        factory = IngressFactory()
+        ingestionTypeProviders = []
         data = fileUtils.read_json(os.path.join(os.path.dirname(__file__), "configuration.json"))
         available_cfgs = data["ingress_configurations"]
         for cfg in available_cfgs:
             if cfg["active"]:
-                ingestionType = factory.create(cfg["mode"], cfg["parameters"])
-                configurations.append(ingestionType)
-        print("Configurations found:" + str(len(configurations)))
+                ingressModeFromConfig = EdgeDataIngressMode[cfg["mode"]]
+                ingressModeFromConfig = cfg["parameters"]
+                ingressModeParametersFromConfig = cfg["parameters"]
+                ingestionTypeProvider = self.factory.create(ingressModeFromConfig, ingressModeParametersFromConfig)
+                ingestionTypeProviders.append(ingestionTypeProvider)
+        print("Ingestion providers found:" + str(len(ingestionTypeProviders)))
         sleep(5)
-        return configurations
+        return ingestionTypeProviders
     
-    def DetectIfImageIsKeyFrame(self, previous_image, current_image, algorithm="PBT"):
+    def __detectIfImageIsKeyFrame(self, previous_image, current_image, algorithm="PBT"):
         isKeyframe = False
 
         if previous_image == None:
@@ -80,7 +81,7 @@ class IngestionController():
         return isKeyframe
 
 
-    def __readData(self, ingressProvider:DataIngressionConfiguration):
+    def __readData(self, ingressProvider:IngressionBase):
         keyframe_images = []
         non_keyframe_images = []
 
@@ -103,7 +104,7 @@ class IngestionController():
                     print(f"Ingress: Reading file {image}")
                     image_path = os.path.join(ingressProvider.input_dir, image)
                     print(f"Entering Keyframe Detector")
-                    isKeyFrame = self.DetectIfImageIsKeyFrame(last_image_path, image_path)
+                    isKeyFrame = self.__detectIfImageIsKeyFrame(last_image_path, image_path)
                     if isKeyFrame:
                         keyframe_images.append(image_path)
                     else:

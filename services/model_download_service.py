@@ -10,8 +10,8 @@ class ModelDownloadService(EventTriggeredService):
         self.storageProvider = storageProvider
         super().__init__()
 
-    def Download(self, filePath):
-        saved_file = self.storageProvider.read_file(filePath)
+    def Download(self, fileSource):
+        saved_file = self.storageProvider.read_file(fileSource)
         if self.modelSaveFileLocation == None:
             self.modelSaveFileLocation = getDirNameFromFile(saved_file)
 
