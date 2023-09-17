@@ -16,7 +16,7 @@ Docker and Docker Compose needs to be installed.
 	   <br/>In case you want to use a specific storage account edit the AZURE_STORAGE_ACCOUNT variable  otherwise contact the owner of the repository to provide you with the default one.
 	   <br/>ENV AZURE_STORAGE_ACCOUNT="<storage_account>" 
 	   <br/>In case you want to use a SAS_TOKEN for the blob storage in Azure edit the following ENV variable otherwise contact the owner of the repository	   	
-       <br/> ENV AZURE_STORAGE_SAS_TOKEN="<sas_token>"   
+       <br/>ENV AZURE_STORAGE_SAS_TOKEN="<sas_token>"   
        <br/>In case you want to use a different queue in Azure edit the following ENV variable otherwise contact the owner of the repository	   	
        <br/>ENV AZ_QUEUE_NAME="Azure Queue Name"
         <br/>In case you want to use a different queue in Azure and thus a different connection string edit the following ENV variable otherwise contact the owner of the repository
