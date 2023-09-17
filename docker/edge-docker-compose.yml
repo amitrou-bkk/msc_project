@@ -1,11 +1,11 @@
 version: '3.1'
 services:
-  # edge-camera-controller-app-01:
-  #   build: 
-  #      context: ..
-  #      dockerfile: ./docker/edge-camera-controller-phone-cam-01.dockerfile
-  #   volumes:
-  #       - /home/amitrou/e_results:/app/edge_shared_files
+  edge-camera-controller-app-01:
+    build: 
+       context: ..
+       dockerfile: ./docker/edge-camera-controller-phone-cam-01.dockerfile
+    volumes:
+        - /home/amitrou/e_results:/app/edge_shared_files
      
   # edge-ingress-controller-app:
   #   build: 
@@ -25,12 +25,12 @@ services:
   #   volumes:
   #       - /home/amitrou/e_results:/app/edge_shared_files
 
-  edge-inference-app:
-    build: 
-       context: ..
-       dockerfile: ./docker/edge-inference-controller.dockerfile
-    volumes:
-        - /home/amitrou/e_results:/app/edge_shared_files
+  # edge-inference-app:
+  #   build: 
+  #      context: ..
+  #      dockerfile: ./docker/edge-inference-controller.dockerfile
+  #   volumes:
+  #       - /home/amitrou/e_results:/app/edge_shared_files
 
 # volumes:
 #   shared-data:

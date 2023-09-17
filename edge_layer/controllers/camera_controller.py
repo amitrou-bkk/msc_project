@@ -15,9 +15,8 @@ class CameraController:
         self.url += f"/{camera_stream_path}"
         self.IsCapturing = False
        
-    def Start(self, delayInSeconds=0):
+    def Start(self, delayInSeconds=1):
         cap = cv2.VideoCapture(self.url)
-        frame_count = delayInSeconds
         self.IsCapturing = True
         
         if not os.path.exists(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"])):
@@ -26,13 +25,14 @@ class CameraController:
         while (self.IsCapturing):
             current_date = datetime.now()
             dateStr =  current_date.strftime('%Y%m%d%H%M%S')
-           
+            print("Reading frame")
             _, frame = cap.read()
-            cv2.imshow("Frame", frame)
+            #cv2.imshow("Frame", frame)
             frame_img_name = os.path.join("/app/edge_shared_files/", os.environ["CAMERA_ID"] + "/",  dateStr + ".jpg")
-            iio.imwrite(frame_img_name, frame)
-           
-            frame_count = frame_count + 1
+            try:
+                iio.imwrite(frame_img_name, frame)
+            except:
+                print("Error Saving the Captured image")
 
             if cv2.waitKey(1) == ord('q'):
                 break
