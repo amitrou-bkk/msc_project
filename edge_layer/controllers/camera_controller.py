@@ -1,11 +1,10 @@
 import cv2
-import numpy as np
 import time
 import os
 import imageio.v3 as iio
 import requests
 from datetime import datetime
-from PIL import Image
+from utilities.file import copyfile
 
 class CameraController:
     def __init__(self, camera_ip, camera_port = None , isHttps = False, user = None, password = None, camera_stream_path = None):
@@ -46,31 +45,23 @@ class CameraController:
         self.IsCapturing = False
 
     def StartSimulation(self, delayInSeconds=5):
-       
-        frame_count = 0
         self.IsCapturing = True
-        
+        sample_images_path = os.path.join(os.path.abspath(os.path.join(__file__ ,"../../..")), "camera_simulation_images")
+        print(sample_images_path)
         if not os.path.exists(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"])):
             os.makedirs(os.path.join("/app/edge_shared_files", os.environ["CAMERA_ID"]))
 
         while (self.IsCapturing):
-            current_date = datetime.now()
-            dateStr = current_date.strftime('%Y%m%d%H%M%S')
-           
-            image = Image.new("RGB", (300, 300))
-            image_created = os.path.join("/app/edge_shared_files/", os.environ["CAMERA_ID"] + "/",  dateStr + ".jpg")
-            image.save(image_created, 'JPEG')
-            print(f"Dummy image {image_created} saved.")
-            frame_count += 1
-
-            if frame_count >= 5:
-                self.IsCapturing = False
+            sample_files = os.listdir(sample_images_path)
+            for sample_file in sample_files:
+                current_date = datetime.now()
+                dateStr = current_date.strftime('%Y%m%d%H%M%S')
+                image_created = os.path.join("/app/edge_shared_files/", os.environ["CAMERA_ID"] + "/",  dateStr + ".jpg")
+                copyfile(os.path.join(sample_images_path, sample_file), image_created)
+                print(f"Dummy image {image_created} saved.")
+                time.sleep(1)
 
             time.sleep(delayInSeconds)
-
-    def RandomImage(a):
-        image = Image.new("RGB", (300, 300))
-        image.save("blank.jpg") 
 
     def __set_resolution(self, url: str, index: int=1, verbose: bool=False):
         try:
